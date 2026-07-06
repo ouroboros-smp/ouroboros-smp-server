@@ -71,6 +71,10 @@ genuinely parallelizes chunk + entity ticking, with correctness machinery that a
   engine never uses it. Patch: aggregate dirty blocks per section per tick and flush as
   multi-block packets. Vital once any simulation writes blocks at volume (see §3), and a
   general win.
+- **F3 — Biome-update API** (optional). `ChunkBiomesPacket` (biomes-only chunk update) is
+  likewise registered but never sent; a small `Instance`/`Chunk` API to rewrite biome
+  palettes and push that packet serves the weather system's biome swaps (§2). Can live
+  app-side initially — the packet record is public.
 
 ### Other efficiencies (no fork needed)
 
@@ -103,15 +107,58 @@ Architecture:
   `worldAge` directly. `SetTimePacket` is also per-player-sendable.
 - **Zone visuals via runtime biomes:** biomes are runtime-registerable
   (`DynamicRegistry`) with per-biome fog/water/grass/foliage colors at 4-block resolution.
-  Climate zones can *look* different, not just rain differently. Caveats: biome changes ship
-  in chunk data (resend on change), and rain-vs-snow rendering is biome-driven — a cold
-  front means swapping biome data, not flipping a flag.
+  Climate zones can *look* different, not just rain differently.
 - **Texture:** `ParticlePacket`/sound for flurries, drizzle, heat shimmer near the player.
 - **Gameplay hooks** (temperature effects, crop response) are app-layer — and pair naturally
   with rooms (a SKYLIT room reacting to real precipitation; an enclosed FINE room sheltering
   from a cold snap).
 
-Sizing: a self-contained Phase 2–3 feature. No fork patches required.
+### Decoupling precipitation from vanilla biomes
+
+Precipitation *type* is decided client-side, per column, from the biome data the client was
+sent: the client renders precipitation only while its weather state is "raining", then checks
+the column's biome — `has_precipitation`? `temperature` below 0.15 after altitude adjustment?
+Cold → snow, warm → rain, no-precipitation → nothing. In vanilla those inputs are baked into
+worldgen; here every one of them is server-authoritative data. Minestom's `Biome`
+(`world/biome/Biome.java`) is a plain record — `hasPrecipitation`, `temperature`,
+`temperatureModifier`, `downfall`, plus visual `effects` — so weather is *not* attached to
+what a biome "really is". The wire biome is a costume.
+
+**Snow (or rain) anywhere — the biome-swap presentation layer:**
+- Register cold variants of any biome: identical colors (the `Biome.builder(existing)` copy
+  constructor preserves effects), `temperature` below the snow threshold. When the climate
+  sim rolls a cold front over a region, rewrite affected chunks' biome palettes to the cold
+  variant, turn rain on for players there → snow falls over plains. Front passes, swap back.
+- **`ChunkBiomesPacket` exists** (the biomes-only update packet) so a swap needs no full
+  chunk resend — but, like `MultiBlockChangePacket`, it is registered in the protocol and
+  never sent by the engine. The climate system hand-rolls it (public packet record, a few
+  lines), or we land it as fork patch **F3: biome-update API** alongside F2.
+- The altitude snow line is free: the client's temperature check is height-adjusted, so one
+  moderately-cold variant yields rain in the valley and snow on the peak, per column.
+- Snow *accumulation* (layers, melting, ice) is server-side block writes — Phase 2 mechanics
+  the climate field simply steers.
+
+**Sandstorms and other non-vanilla weather — composite illusions:** the vanilla client
+renders exactly two precipitation types, and the resource-pack rain texture is a single
+global texture (retexture it and all rain everywhere becomes sand). So a sandstorm is built
+from parts: swap to a custom "duststorm" biome whose `effects` carry sand-colored fog and sky
+(instant atmosphere change, most of the perceptual work), keep `has_precipitation: false` so
+no rain renders through it, then player-local particle curtains, wind sound loops, and
+gameplay bite (slowness, visibility, hunger). Convincing, but it reads as "storm effect,"
+not vanilla-crisp falling weather — a client limit shared by every server. The one path to
+true custom precipitation rendering is an optional client mod (`LocalBlindness` is the org's
+precedent); the server-side composite stays the baseline so vanilla clients get the full
+system.
+
+**Design rule this imposes:** once wire-biomes become a runtime costume, no gameplay system
+may read the wire biome as truth. WildAnimalBalancer keys species off biome ids today; ported
+naively, a cold snap over the savanna would confuse the ecology. The climate system therefore
+owns two maps — the *ecological* biome (stable, what the world is) and the *presented* biome
+(what the client currently sees). Gameplay reads the first; packets carry the second. Cheap
+to enforce from day one, miserable to untangle later.
+
+Sizing: a self-contained Phase 2–3 feature. No fork patches strictly required (F3 optional
+quality-of-life).
 
 ---
 
