@@ -80,40 +80,50 @@ surrender boxes (dialog-confirmed), refunding points but not XP.
 
 ## System 2 — Combat classes (fighting styles)
 
-Twenty styles from the whiteboard. Armor rating is a **certification**: **N**one / **L**ight /
-**M**edium / **H**eavy — wear classes above your cert and the style's bonuses switch off (plus
+Structure (from the design discussions): **five fundamental styles**, each branching into
+**three specialties**. A specialty **retains its fundamental's bonuses** — a Lancer is still a
+Spearman underneath. Armor rating is a **certification**: **N**one / **L**ight / **M**edium /
+**H**eavy — wear classes above your cert and the style's bonuses switch off (plus
 movement/stamina penalties). Armor class → attribute-modifier packages we define, since armor
 values are ours (`ARMOR`, `ARMOR_TOUGHNESS`, `MOVEMENT_SPEED`, `KNOCKBACK_RESISTANCE`).
 
-| Style | Armor | Core mechanics |
-|---|---|---|
-| Baller | N/L | Throws paper, fire charges, slime balls, snowballs, wind charges, bricks, clay, pearls, potions, poisonous potatoes, eggs |
-| Pig Rider | L/M | Law enforcement: billy club + shield, rides pigs, knockout/restrain/transport to jail |
-| Pirate (based) | N/L | Fishing-rod displacement, special casts; trident secondary |
-| Scout | N/L | Move speed, dodge roll, vault, ping |
-| Spearman | N/L | Short spear + shield or long spear alone; reach and flexibility |
-| Swordman | N/M | Sword + shield; balance |
-| Berserker | L/M | Axes + swords; high damage, counters shields |
-| Bowman | N/L | Range, mobility, bow attack speed; fast daggers |
-| Crossbowman | M/H | Higher damage, armor pen, rockets; fast daggers |
-| Mobile Wall | M/H | Tank; ally buff aura while shield raised; armored-horse trample |
-| Mounted Archer | N/L | Draw speed while moving; light mounted spear use |
-| Spear Cavalry | L/M | Mounted charges, momentum damage |
-| Juggernaut | M/H | Mace + great axe; tanky and slow in heavy |
-| Assassin | N/L | Stealth; poisoned daggers; dagger/crossbow sneak attacks |
-| Duelist | N/L | Opening-slash ability; single sword; speed and damage |
-| Mounted Scout | N/L | Swiftest rider; horse-handling abilities |
-| Slayer | N/L | Attack scales inversely with defense and health; great axe |
-| Hoplite | L/M | Long spear **with** shield; mobile reach fighter |
-| Pioneer | N/L | Scout+; clears exhaustion; harder for mobs to notice |
-| Valkyrie | L/M | Mace specialist; high jump |
+| Fundamental | Armor | Core kit | Specialties |
+|---|---|---|---|
+| **Scout** | N/L | Move speed, dodge roll, vault; marks targets with glowing via spyglass (toggleable) | Outrider, Assassin, Pioneer |
+| **Spearman** | N/L | Short spear + shield, or two-handed long spear; reach | Lancer, Pirate, Hoplite |
+| **Swordsman** | N/M | Sword and board, 50/50 attack/defense | Pig Rider, Mobile Wall, Duelist |
+| **Archer** | N/L | Bow focus; increased mobility while using one | Ranger, Baller, Crossbowman |
+| **Berserker** | L/M | Axe + shield; big damage, quick turtle, lash out again | Valkyrie, Slayer, Juggernaut |
 
-**Suggested organization** (keeps the flat list, adds a prerequisite skeleton — natural
-clusters are visible on the whiteboard): base styles (Scout, Spearman, Swordman, Berserker,
-Bowman, Baller, Pirate) branch into advanced ones (Scout → Pioneer / Mounted Scout; Spearman →
-Hoplite / Spear Cavalry; Swordman → Duelist / Mobile Wall; Berserker → Slayer / Juggernaut /
-Valkyrie; Bowman → Mounted Archer / Crossbowman; Pig Rider and Assassin as gated entries —
-Pig Rider via governance standing, Assassin via infamy). Open question for the group.
+| Specialty | Of | Armor | Core mechanics |
+|---|---|---|---|
+| Outrider | Scout | N/L | The fastest mounted style; top speed TBD |
+| Assassin | Scout | N/L | Stealth, sneak attacks, tainted daggers; city infiltration |
+| Pioneer | Scout | N/L | Solo exploration and independence: clears own exhaustion, harder for mobs to notice, affinity with wolves/tamables |
+| Lancer | Spearman | L/M | Continuous mounted spear charges |
+| Pirate | Spearman | N/L | Array of fishing-rod casts to hook/displace enemies; trident primary |
+| Hoplite | Spearman | L/M | Long spear **with** shield; durable, mobile; trades damage for survivability |
+| Pig Rider | Swordsman | L/M | Law enforcement: billy club + shield; knockout, load onto pig, transport to prison |
+| Mobile Wall | Swordsman | M/H | Shield specialist; buffs nearby allies while shield raised; horseback trample |
+| Duelist | Swordsman | N/L | Opening-cut ability; single sword, no shield; faster, higher damage |
+| Ranger | Archer | N/L | Mounted/speedy archer — the faster they move, the better the bow |
+| Baller | Archer | N/L | Throws anything (paper, fire charges, slime balls, snowballs, wind charges, bricks, clay, pearls, potions, poisonous potatoes, eggs); shield-blocking an entity deflects it back with increased velocity |
+| Crossbowman | Archer | M/H | More armor, more damage, armor penetration; vanilla rate of fire; rockets |
+| Valkyrie | Berserker | L/M | Mace specialist; very jumpy and fally |
+| Slayer | Berserker | N/L | Less armor and less health → more damage; greataxe |
+| Juggernaut | Berserker | M/H | Mace and/or greataxe; tankiest style in full Netherite but slower; reduced fall damage to complement the mace |
+
+**Multiclassing rules** (from the discussions):
+- Multiclassing is fully allowed; the point budget means a multiclasser **forgoes the final
+  levels** of their styles — mastery is the price of breadth. (Canonical example: Slayer with
+  Scout levels up to the dodge roll = the glass-cannon build.)
+- **One specialty per fundamental**: a Pirate Baller is legal (Spearman + Archer trees); a
+  Pirate Lancer is not (both Spearman specialties).
+- Awkward pairings largely self-police through **conflicting armor certifications** (a
+  Juggernaut Assassin's M/H and N/L kits switch each other's bonuses off) plus targeted
+  restrictions where needed.
+- The economic professions use the same shape (pick a base, specialize after some levels,
+  one specialization per base) so both systems read identically to players.
 
 ### Mechanics → engine mapping (all verified available)
 
@@ -125,24 +135,33 @@ Pig Rider via governance standing, Assassin via infamy). Open question for the g
   potion-invisible. Mob perception is a parameter of **our** AI target selectors, so
   Pioneer's "harder for mobs to notice" is a multiplier in our own code — trivial here,
   impossible in vanilla.
-- **Mounts (Pig Rider, cavalry, Mounted Wall trample):** full passenger/vehicle API
-  (`addPassenger`/`getVehicle`); saddled steering for pig/horse; restrain-and-transport =
-  the restrained player as passenger on the pig. Charge/trample damage = mount velocity in
-  our damage formula.
+- **Spyglass mark (Scout):** spyglass use is a detectable item-use state + look-ray we cast
+  server-side; the mark applies the glowing flag via entity metadata, which we can send
+  **per-viewer** (targeted metadata packets), so marks can be ally-only and toggleable.
+  Pioneer extension from the discussions: tamed wolves (our AI) accept the marked entity as
+  a pack target — one line in a target selector we own.
+- **Mounts (Outrider, Lancer, Pig Rider, Mobile Wall trample, Ranger):** full
+  passenger/vehicle API (`addPassenger`/`getVehicle`); saddled steering for pig/horse;
+  restrain-and-transport = the restrained player as passenger on the pig. Charge/trample
+  damage = mount velocity in our damage formula; Ranger's "faster you go, better the bow"
+  and Lancer's continuous charges are the same velocity input feeding draw time and damage.
 - **Knockout/restrain (Pig Rider):** unconscious = custom state we own (immobilize via
   attributes, screen effects, interaction lockout). Jail feeds the existing justice stack —
   Pig Rider is the *player-driven* complement to Patrol's golem constabulary, warrants come
   from Patrol heat, bans/records from Mehen.
-- **Dodge roll/vault (Scout), high jump (Valkyrie):** velocity impulses + brief i-frames in
-  our damage pipeline; `JUMP_STRENGTH` + `SAFE_FALL_DISTANCE` attributes.
+- **Dodge roll/vault (Scout), high jump (Valkyrie), Juggernaut fall reduction:** velocity
+  impulses + brief i-frames in our damage pipeline; `JUMP_STRENGTH`, `SAFE_FALL_DISTANCE`,
+  and `FALL_DAMAGE_MULTIPLIER` attributes all exist for exactly this.
 - **Projectiles (Baller, Pirate, Crossbowman rockets):** projectile behavior is fully custom
   (Minestom ships none) — throwing bricks and poisonous potatoes costs the same as snowballs.
   Fishing-rod displacement = our hook entity + velocity pulls.
-- **Shield mechanics (Swordman/Mobile Wall/Berserker counter):** the blocking model is ours —
-  shield-raise events, damage reduction, axe shield-break, and the Mobile Wall aura (AoE ally
-  effects while blocking) are all rules in our combat layer.
-- **Conditional stats (Slayer, Bowman/Crossbowman daggers, Mounted Archer):** dynamic
-  attribute modifiers recomputed on equip/health/mount-state change — cheap server-side
+- **Shield mechanics (Swordsman/Mobile Wall/Berserker/Baller):** the blocking model is ours —
+  shield-raise events, damage reduction, axe shield-break, the Mobile Wall aura (AoE ally
+  effects while blocking), and the Baller's deflect (blocked entity re-launched with
+  amplified velocity — the block event hands us the projectile, we flip and scale its
+  vector) are all rules in our combat layer.
+- **Conditional stats (Slayer, Archer/Crossbowman daggers, Ranger):** dynamic attribute
+  modifiers recomputed on equip/health/mount-state/velocity change — cheap server-side
   listeners feeding the attribute API.
 - **Exhaustion (Pioneer), battle fatigue:** our stamina/hunger layer (Phase 2 owns food) —
   fatigue accrues in combat, cleared by Entertainers (the interdependence bridge).
@@ -175,16 +194,20 @@ but a Juggernaut can still ride a horse badly.
   is Phase 2's survival baseline — combat classes are *rules layered on it*, so build that
   layer class-aware from the start (damage events carry style context).
 - **Phase 3:** shared substrate (graphs, XP, persistence, dialogs, abilities) + first
-  playable slice: 3–4 base styles (Swordman, Bowman, Scout, Spearman) + Laborer/Blacksmith
-  loop to prove the economy.
-- **Phase 3+:** mounted styles (need the mount layer), Assassin/Pioneer (need AI perception),
-  Pig Rider (needs jail/justice wiring), Enchanter (needs the magic framework).
+  playable slice: the five fundamentals (Scout, Spearman, Swordsman, Archer, Berserker) +
+  Laborer/Blacksmith loop to prove the economy. Specialties follow once their supporting
+  systems exist.
+- **Phase 3+:** mounted specialties (need the mount layer), Assassin/Pioneer (need AI
+  perception + tamables), Pig Rider (needs jail/justice wiring), Enchanter (needs the magic
+  framework).
 
 ## Open questions
 
-1. Prerequisite skeleton for styles (cluster proposal above) — or keep all 20 flat-entry?
-2. Point budgets: exact numbers for "master one + dabble" in each track.
-3. Respec friction: free with cooldown, resource cost, or XP-preserving surrender only?
-4. PvP scope: are styles always-on, or arena/war-declared contexts only (interacts with
+1. Point budgets: exact numbers for "master one + dabble" in each track, and how many
+   fundamental levels before the specialty choice unlocks.
+2. Respec friction: free with cooldown, resource cost, or XP-preserving surrender only?
+3. PvP scope: are styles always-on, or arena/war-declared contexts only (interacts with
    Patrol heat)?
-5. Pig Rider entry: governance-gated (Mehen standing / Discord role) or open?
+4. Pig Rider entry: governance-gated (Mehen standing / Discord role) or open?
+5. Outrider top speed (flagged TBD in the discussions) and whether Scout's mark is
+   ally-visible only or public.
