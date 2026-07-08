@@ -201,13 +201,61 @@ but a Juggernaut can still ride a horse badly.
   perception + tamables), Pig Rider (needs jail/justice wiring), Enchanter (needs the magic
   framework).
 
-## Open questions
+## Decisions (2026-07-08 grill)
 
-1. Point budgets: exact numbers for "master one + dabble" in each track, and how many
-   fundamental levels before the specialty choice unlocks.
-2. Respec friction: free with cooldown, resource cost, or XP-preserving surrender only?
-3. PvP scope: are styles always-on, or arena/war-declared contexts only (interacts with
-   Patrol heat)?
-4. Pig Rider entry: governance-gated (Mehen standing / Discord role) or open?
-5. Outrider top speed (flagged TBD in the discussions) and whether Scout's mark is
-   ally-visible only or public.
+These resolve the design's five open questions (point budgets, respec, PvP scope, Pig Rider
+entry, Outrider/Scout tuning). Recorded with the reasoning so the trade-offs aren't
+re-litigated.
+
+**1. Point budgets and specialty gating.**
+Both buckets use one shared shape: *master one + dabble one*. The budget funds one base/style
+fully to Mastery plus a second to roughly tier II-III, no further. Progression runs a six-tier
+ladder (Novice, I, II, III, IV, Mastery) in both tracks. The specialty branch unlocks at
+**tier II**: the fundamental's core kit is delivered and felt by then, and four tiers of
+headroom remain for the specialty to develop. Consequence: a main tree reaches a fully
+developed specialty, a dabble second tree only tastes one, and a three-tree multiclasser
+Masters nothing (breadth costs mastery).
+
+**2. Respec friction and the XP model.**
+Respec stays surrender-only (dialog-confirmed): reclaim the point immediately, forfeit the XP
+spent into the surrendered box. No cooldown, no material cost; the XP re-grind is the friction
+and it self-scales with box depth. Anti-hoard rule: while a bucket is fully allocated (maxed),
+that bucket stops gaining XP, so a finished character cannot bank an XP reserve to instantly
+refund a respec. Maxing is per-bucket (max combat, combat XP halts while profession XP keeps
+flowing). XP is typed and earned by use in both buckets; whether it lives as a named pool or as
+per-box counters is an implementation detail, since the design rules hold either way.
+
+**3. PvP scope: always-on, consequence-gated.**
+Styles are live in the open world everywhere, not arena-gated. Aggression is policed by
+consequence, not by context, reusing the existing justice stack:
+
+- Open world: PvP live; unprovoked aggression spikes consent-weighted Patrol heat, which drives
+  the warrant, arrest, and record pipeline.
+- Declared War: a Mehen-mediated conflict between groups that suppresses heat between
+  belligerents inside its scope; the sanctioned outlet for large-group fighting (see glossary).
+- Duel / arena: opt-in, zero heat, for sport and practice.
+
+See ADR docs/adr/0001-pvp-always-on-consequence-gated.md for the full rationale.
+
+**4. Pig Rider entry: open spec, warrant-gated arrest.**
+Anyone can spec Pig Rider. The knockout is ordinary combat aggression (unlawful use generates
+heat like any attack), and imprisonment only completes against a target carrying an active
+warrant (Patrol heat over threshold). The class self-polices through systems already built; no
+governance appointment required. A hook is left for Mehen to grant *expanded* authority
+(local-law arrests beyond global heat) to deputized players later.
+
+**5. Outrider speed and Scout's mark.**
+Outrider top speed is specified relatively, not as a fixed number: the fastest land movement in
+the game, roughly 1.3-1.5x the best non-Outrider mount, hard-capped below the server's reliable
+chunk-generation throughput so a rider can never outrun terrain (guards the frontier chunk-hole
+hazard). Exact value tuned in playtest. Scout's spyglass mark is ally-only (per-viewer metadata
+already supports it), toggleable, and bounded by line-of-sight refresh or duration so it is a
+tactical designation, not a permanent wallhack. A public "wanted" glow, if ever needed, comes
+from the warrant system, not this mark.
+
+## Glossary additions
+
+**Declared War** - a conflict formally declared through Mehen governance between two groups or
+settlements. Within its scope, Patrol heat is suppressed between the belligerents so styles run
+fully live without constabulary interference. It is the sanctioned alternative to open-world
+aggression, which always carries heat.
