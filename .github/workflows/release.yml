@@ -5,7 +5,7 @@ permissions:
   contents: write # Required to create tags
 jobs:
   release:
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, crucible-pc]
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v6
