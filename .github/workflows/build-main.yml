@@ -14,7 +14,7 @@ concurrency:
 jobs:
   build:
     name: JVM Test
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, crucible-pc]
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v6
@@ -32,7 +32,7 @@ jobs:
 
   javadoc:
     name: Javadoc Compilation
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, crucible-pc]
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v6
@@ -51,7 +51,7 @@ jobs:
   native-test:
     name: Native Test
     needs: build
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, crucible-pc]
     outputs:
       metadata-updated: ${{ steps.native-run.outcome == 'failure' }}
     steps:
@@ -83,7 +83,7 @@ jobs:
   publish-snapshot:
     name: Publish Snapshot
     needs: [ build, javadoc, native-test ]
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, crucible-pc]
     steps:
       - name: Generate Bot Token
         if: needs.native-test.outputs.metadata-updated == 'true'
