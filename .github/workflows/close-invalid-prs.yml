@@ -16,7 +16,7 @@ jobs:
         github.head_ref == 'master' ||
         github.event.pull_request.head.repo.owner.type != 'User'
       )
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, crucible-pc]
     steps:
       - name: Close Invalid Pull Requests
         env:
