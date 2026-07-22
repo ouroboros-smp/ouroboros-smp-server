@@ -16,7 +16,7 @@ concurrency:
 jobs:
   build:
     name: JVM Test
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, crucible-pc]
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v6
@@ -34,7 +34,7 @@ jobs:
 
   javadoc:
     name: Javadoc Compilation
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, crucible-pc]
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v6
@@ -53,7 +53,7 @@ jobs:
   native-test:
     name: Native Test
     needs: build
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, crucible-pc]
     outputs:
       metadata-updated: ${{ steps.native-run.outcome == 'failure' }}
     steps:
@@ -87,7 +87,7 @@ jobs:
     if: |
       github.event_name != 'merge_group' &&
       !contains(github.event.pull_request.labels.*.name, 'breaking')
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, crucible-pc]
     steps:
       - name: Checkout Base Branch
         uses: actions/checkout@v6
@@ -134,7 +134,7 @@ jobs:
       needs.javadoc.result == 'success' &&
       needs.native-test.result == 'success' &&
       (needs.binary-compatibility.result == 'success' || needs.binary-compatibility.result == 'skipped')
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, crucible-pc]
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v6
